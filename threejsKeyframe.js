@@ -84,9 +84,8 @@ function createScene(canvas)
 
     // Add  a camera so we can view the scene
     camera = new THREE.PerspectiveCamera( 45, canvas.width / canvas.height, 1, 4000 );
-    camera.rotation.set(0,90,0);
-    camera.position.set(0, 15, 8);
-    camera.updateProjectionMatrix();
+    camera.position.set(0, 15, 0);
+    orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
     scene.add(camera);
     
     // Create a group to hold all the objects
