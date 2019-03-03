@@ -3,23 +3,14 @@ scene = null,
 camera = null,
 root = null,
 group = null,
-cube = null,
-waves = null,
+grass = null,
 directionalLight = null;
 
 var duration = 10, // sec
-crateAnimator = null,
-waveAnimator = null,
-lightAnimator = null,
-waterAnimator = null,
-animateCrate = true,
-animateWaves = true,
-animateLight = true,
-animateWater = true,
+bunnyAnimator = null,
 loopAnimation = true;
 
-var waterMapUrl = "../images/water_texture.jpg";
-var createMapUrl = "../images/wooden_crate_1.jpg";
+var grassMapUrl = "./images/grass_texture.jpg";
 var objLoader = null;
 
 function run()
@@ -86,14 +77,16 @@ function createScene(canvas)
     renderer = new THREE.WebGLRenderer( { canvas: canvas, antialias: true } );
 
     // Set the viewport size
-    renderer.setSize(canvas.width, canvas.height);
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
     // Create a new Three.js scene
     scene = new THREE.Scene();
 
     // Add  a camera so we can view the scene
     camera = new THREE.PerspectiveCamera( 45, canvas.width / canvas.height, 1, 4000 );
-    camera.position.set(0, 2, 8);
+    camera.rotation.set(0,90,0);
+    camera.position.set(0, 15, 8);
+    camera.updateProjectionMatrix();
     scene.add(camera);
     
     // Create a group to hold all the objects
@@ -114,25 +107,21 @@ function createScene(canvas)
     root.add(group);
 
     // Create a texture map
-    var waterMap = new THREE.TextureLoader().load(waterMapUrl);
+    var waterMap = new THREE.TextureLoader().load(grassMapUrl);
     waterMap.wrapS = waterMap.wrapT = THREE.RepeatWrapping;
-    waterMap.repeat.set(4, 4);
+    waterMap.repeat.set(50, 50);
 
     var color = 0xffffff;
     var ambient = 0x888888;
     
     // Put in a ground plane to show off the lighting
     geometry = new THREE.PlaneGeometry(200, 200, 50, 50);
-    waves = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({color:color, map:waterMap, side:THREE.DoubleSide}));
-    waves.rotation.x = -Math.PI / 2;
-    waves.position.y = -1.02;
-    
-    // Add the waves to our group
-    root.add( waves );
+    grass = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({color:color, map:waterMap, side:THREE.DoubleSide}));
+    grass.rotation.x = -Math.PI / 2;
 
-    // Create the cube geometry
-    map = new THREE.TextureLoader().load(createMapUrl);
-    geometry = new THREE.CubeGeometry(2, 2, 2);
+    
+    // Add the grass to our group
+    root.add( grass );
     
     // And put the geometry and material together into a mesh
     var color = 0xffffff;
@@ -191,8 +180,8 @@ function divideLine(lines,jumps,x1,z1,x2,z2)
     }
 
     return lines;
-
 }
+
 
 keys = getKeys(16);
 getK = keys[0];
@@ -220,45 +209,38 @@ lines = divideLine(lines,jumps,-1,-4.5,-1.35,-3.15);
 lines = divideLine(lines,jumps,-1.35,-3.15,-1,-1.5);
 lines = divideLine(lines,jumps,-1,-1.5,0,0);
 
-console.log(lines);
+angles[6].y = angles[6].y*-1;
+angles[7].y = angles[7].y*-1;
+angles[8].y = angles[8].y*-1;
+angles[9].y = angles[9].y*-1;
 
 function playAnimations()
 {
-    // position animation
-    if (crateAnimator)
-        crateAnimator.stop();
     
     group.position.set(0, 0, 0);
     group.rotation.set(0, 0, 0);
 
-    
-
-
-    if (animateCrate)
-    {
-        crateAnimator = new KF.KeyFrameAnimator;
-        crateAnimator.init({ 
-            interps:
-                [
-                    { 
-                        
-                        keys: getK,
-                        values:lines,
-                        target:group.position
-                    }
-                    ,
-                    { 
-                        keys:getKR, 
-                        values:angles,
-                        target:group.rotation
-                    },
-                ],
-            loop: loopAnimation,
-            duration:duration * 1000,
-            //easing:TWEEN.Easing.Bounce.InOut,
-        });
-        crateAnimator.start();
+    bunnyAnimator = new KF.KeyFrameAnimator;
+    bunnyAnimator.init({ 
+        interps:
+            [
+                { 
+                    
+                    keys: getK,
+                    values:lines,
+                    target:group.position
+                }
+                ,
+                { 
+                    keys:getKR, 
+                    values:angles,
+                    target:group.rotation
+                },
+            ],
+        loop: loopAnimation,
+        duration:duration * 1000,
+    });
+    bunnyAnimator.start();
         
-    }
 
 }

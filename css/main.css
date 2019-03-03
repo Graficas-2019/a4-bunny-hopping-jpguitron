@@ -8,6 +8,7 @@
 
 body {
 	color:rgb(10, 0, 0);
+	margin: 0;
 }
 
 #container {
@@ -19,3 +20,15 @@ body {
 	background-color:#ffffff;
 }
 
+#title {
+	position:absolute;
+	left:20px;
+	top:20px;
+	color:Ivory;
+}
+#prompt {
+	position:absolute;
+	bottom:20px;
+	left:20px;
+	color:Ivory;
+}
