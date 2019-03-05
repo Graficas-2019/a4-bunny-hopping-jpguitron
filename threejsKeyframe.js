@@ -13,6 +13,7 @@ loopAnimation = true;
 var grassMapUrl = "./images/grass_texture.jpg";
 var objLoader = null;
 
+
 function run()
 {
     requestAnimationFrame(function() { run(); });
@@ -55,6 +56,7 @@ function loadObj()
             bunny.position.x = 0;
             bunny.rotation.x = 0;
             bunny.rotation.y = Math.PI / 180 * 90;
+            bunny.castShadow = true;
             group.add(object);
         },
         function ( xhr ) {
@@ -91,15 +93,19 @@ function createScene(canvas)
     // Create a group to hold all the objects
     root = new THREE.Object3D;
     
+    // Turn on shadows
+    renderer.shadowMap.enabled = true;
+    // Options are THREE.BasicShadowMap, THREE.PCFShadowMap, PCFSoftShadowMap
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
     // Add a directional light to show off the object
-    directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
+    directionalLight = new THREE.DirectionalLight( 0xffffff, 1.5);
 
     // Create and add all the lights
-    directionalLight.position.set(0, 1, 2);
+    directionalLight.position.set(0, 3, 5);
+    directionalLight.castShadow = true;
     root.add(directionalLight);
 
-    ambientLight = new THREE.AmbientLight ( 0x888888 );
-    root.add(ambientLight);
     
     // Create a group to hold the objects
     group = new THREE.Object3D;
@@ -121,6 +127,8 @@ function createScene(canvas)
     
     // Add the grass to our group
     root.add( grass );
+    grass.castShadow = false;
+    grass.receiveShadow = true;
     
     // And put the geometry and material together into a mesh
     var color = 0xffffff;
